@@ -37,11 +37,12 @@ ___
 
 **macLocation Extension Attribute**
 
-![alt text](https://raw.githubusercontent.com/jamfprofessionalservices/macNetworkLocation/master/imgs/macLocation-EA.png "You will need to create an extension attribute exactly as shown!")
-*Create an extension attribute exactly as shown!*
+![alt text](/imgs/macLocation-EA.png)
 
+*Create an extension attribute exactly as shown!*
 
 **macLocation Extension Attribute**
 
-![alt text](https://raw.githubusercontent.com/jamfprofessionalservices/macNetworkLocation/master/imgs/macOSDevicesOffNetwork-SG.png "You will need to create a Smart Computer Group as shown to be able to use this info for scoping.")
+![alt text](/imgs/macOSDevicesOffNetwork-SG.png)
+
 *Create a Smart Group as shown to be able to use for scoping.*
