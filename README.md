@@ -41,6 +41,7 @@ ___
 
 *Create an extension attribute exactly as shown!*
 
+
 **macLocation Extension Attribute**
 
 ![alt text](/imgs/macOSDevicesOffNetwork-SG.png)
