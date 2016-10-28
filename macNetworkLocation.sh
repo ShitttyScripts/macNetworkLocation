@@ -2,7 +2,7 @@
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 #
-# Copyright (c) 2016, JAMF Software, LLC.  All rights reserved.
+# Copyright (c) 2016 Jamf.  All rights reserved.
 #
 #       Redistribution and use in source and binary forms, with or without
 #       modification, are permitted provided that the following conditions are met:
@@ -11,9 +11,9 @@
 #               * Redistributions in binary form must reproduce the above copyright
 #                 notice, this list of conditions and the following disclaimer in the
 #                 documentation and/or other materials provided with the distribution.
-#               * Neither the name of the JAMF Software, LLC nor the
-#                 names of its contributors may be used to endorse or promote products
-#                 derived from this software without specific prior written permission.
+#               * Neither the name of the Jamf nor the names of its contributors may be
+#                 used to endorse or promote products derived from this software without 
+#                 specific prior written permission.
 #
 #       THIS SOFTWARE IS PROVIDED BY JAMF SOFTWARE, LLC "AS IS" AND ANY
 #       EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -26,7 +26,7 @@
 #       (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #       SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #  
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # 
@@ -44,8 +44,9 @@
 #			- Policy created for this Script w/ a Trigger of NetworkStateChange
 #			- Smart Computer Group to use for exluding off network computers from policies
 #			- API User w/ the following permissions:
-#				- Read & Update Permssion for Computer Objects
+#				- Read & Update Permssion for Computers
 #				- Read Permission for Computer Extension Attributes
+#				- Update Permission for Users
 #
 # EXIT CODES:
 #			0 - Everything is Successful
@@ -58,7 +59,7 @@
 # Written by: Joshua Roskos | Professional Services Engineer | Jamf
 #
 # Created On: October 24th, 2016
-# Updated On: October 24th, 2016
+# Updated On: October 28th, 2016
 # 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
@@ -101,7 +102,7 @@ fi
 
 # Name of extension Attribute in Jamf Pro
 eaName="macLocation"
-eaID=$( /usr/bin/curl -s -u ${apiUser}:${apiPass} ${jamfProURL}/JSSResource/computerextensionattributes/name/${eaName} | perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
+eaID=$( /usr/bin/curl -s -u "${apiUser}":"${apiPass}" -H "Accept: application/xml" ${jamfProURL}/JSSResource/computerextensionattributes/name/${eaName} | perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # CHECK IF ${localServer} IS AVAILABLE
@@ -125,14 +126,14 @@ fi
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 macSerial=$( system_profiler SPHardwareDataType | grep Serial |  awk '{print $NF}' )
-jamfProId=$( /usr/bin/curl -s -u ${apiUser}:${apiPass} ${jamfProURL}/JSSResource/computers/serialnumber/${macSerial}/subset/general | perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' )
+jamfProId=$( /usr/bin/curl -s -u "${apiUser}":"${apiPass}" -H "Accept: application/xml" ${jamfProURL}/JSSResource/computers/serialnumber/${macSerial}/subset/general | perl -lne 'BEGIN{undef $/} while (/<id>(.*?)<\/id>/sg){print $1}' | head -1 )
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 # SEND NETWORK LOCATION TO JAMF PRO SERVER
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 echo "Sending network location to Jamf Pro..."
-/usr/bin/curl -sfku ${apiUser}:${apiPass} -X PUT -H "Content-Type: text/xml" -d "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> <computer> <extension_attributes> <extension_attribute> <id>${eaID}</id> <value>${result}</value> </extension_attribute> </extension_attributes> </computer>" ${jamfProURL}/JSSResource/computers/id/${jamfProId} > /dev/null
+/usr/bin/curl -sfku "${apiUser}":"${apiPass}" -X PUT -H "Content-Type: text/xml" -d "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?> <computer> <extension_attributes> <extension_attribute> <id>${eaID}</id> <value>${result}</value> </extension_attribute> </extension_attributes> </computer>" ${jamfProURL}/JSSResource/computers/id/${jamfProId} > /dev/null
 
 if [ "$?" != "0" ]; then
 	echo "   > Error updating network location on Jamf Pro."
