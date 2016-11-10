@@ -47,3 +47,10 @@ ___
 ![alt text](/imgs/macOSDevicesOffNetwork-SG.png)
 
 *Create a Smart Group as shown to be able to use for scoping.*
+
+
+**Check Network Location Policy*
+
+![alt text](/imgs/checkNetworkLocation-Policy.png)
+
+*Create a Policy as shown here.*
