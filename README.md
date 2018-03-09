@@ -22,6 +22,7 @@ Requirements:
 * API user w/ the following permissions:
  * Read & Update permission for Computer Objects
  * Read permission for Computer Extension Attributes
+ * Update permission for Users
 
 Exit Codes:
 * 0 - Everything is Successful
